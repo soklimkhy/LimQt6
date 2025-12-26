@@ -1,5 +1,8 @@
 ## LimQt6
-✔ Powered by PyQt6  
-✔ Custom themed widgets (LimButton, LimComboBox, etc.)  
-✔ Drop-in usage in existing PyQt6 projects  
-✔ Modern UI with dynamic themes  
+LimQt6 is a simple UI component library built on top of PyQt6.
+It inherits native Qt widgets and applies improved styling, theme handling, and modern UI behavior.
+X LimQt6 requires PyQt6.
+It will not work without PyQt6 installed.
+
+## Purpose 
+I just love PyQt6 
