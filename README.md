@@ -1,4 +1,4 @@
-## limqt6
+## LimQt6
 limqt6 is a lightweight UI component library built on top of PyQt6.
 It inherits standard Qt widgets and extends them with improved styling,
 custom themes, and quality-of-life features — without replacing Qt.
