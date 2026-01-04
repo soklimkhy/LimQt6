@@ -1,6 +1,7 @@
 import os
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
-from limqt6.widgets import LimButton, LimLabel, LimLineEdit, LimFrame, LimSwitch
+from limqt6.widgets import LimButton, LimLabel, LimLineEdit, LimFrame
+from limqt6.widgetsplus import LimSwitch
 from limqt6.core.app import LimApp
 from limqt6.theme.manager import theme_manager
 from limqt6.icon import LimIcon

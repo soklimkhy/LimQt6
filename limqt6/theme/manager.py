@@ -77,9 +77,10 @@ class ThemeManager:
             LimLineEdit {{
                 background-color: transparent; /* shadcn inputs are often transparent on bg */
                 border: 1px solid {t.input_border};
-                border-radius: 6px;
+                border-radius: 3px;
                 color: {t.text};
-                padding: 6px 12px;
+                font-size: 14px;
+                padding: 4px 8px;
                 selection-background-color: {t.text_secondary};
             }}
             LimLineEdit:focus {{

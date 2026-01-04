@@ -45,6 +45,6 @@ LIGHT_THEME = ThemePalette(
     text="#09090b",  # Zinc 950
     text_secondary="#71717a",  # Zinc 500 (Muted)
     border="#e4e4e7",  # Zinc 200
-    input_border="#e4e4e7",  # Zinc 200
+    input_border="#919191",  # Zinc 200
     ring="#18181b",  # Zinc 900
 )
