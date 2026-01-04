@@ -34,7 +34,7 @@ class ThemeManager:
             QWidget {{
                 background-color: {t.background};
                 color: {t.text};
-                font-family: 'Inter', 'Segoe UI', sans-serif;
+                font-family: 'Geist', 'Geist Sans', 'Inter', 'Segoe UI', sans-serif;
                 font-size: 14px;
             }}
 

@@ -7,6 +7,13 @@ class LimApp(QApplication):
         if argv is None:
             argv = sys.argv
         super().__init__(argv)
+
+        # Load fonts
+        from limqt6.core.font import FontManager
+
+        self.primary_font = FontManager.load_project_fonts()
+
+        # Apply theme
         self.apply_theme()
 
     def apply_theme(self):
