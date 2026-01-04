@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import (
-    QPushButton,
     QLabel,
+    QPushButton,
     QLineEdit,
     QFrame,
     QCheckBox,

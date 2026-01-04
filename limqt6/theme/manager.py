@@ -62,10 +62,9 @@ class ThemeManager:
                 color: {t.primary_foreground};
                 border: 1px solid transparent;
                 border-radius: 6px;
-                padding: 8px 16px;
-                font-weight: 500;
-                font-style: normal;
-                font-size: 14px;
+                padding: 5px 11px;
+                font-weight: bold;
+                font-size: 15px;
             }}
             LimButton:hover {{
                 background-color: {t.primary_hover};
