@@ -4,7 +4,7 @@ from limqt6.widgets import LimButton, LimLabel, LimLineEdit, LimFrame, LimCheckB
 from limqt6.widgetsplus import LimSwitch
 from limqt6.core.app import LimApp
 from limqt6.theme.manager import theme_manager
-from limqt6.icon import LimIcon
+from PyQt6.QtGui import QIcon
 
 
 def main():
@@ -48,7 +48,7 @@ def main():
 
     icon_path = os.path.abspath("assets/star.svg")
     icon_btn = LimButton("   Star Icon")
-    icon_btn.setIcon(LimIcon(icon_path))
+    icon_btn.setIcon(QIcon(icon_path))
 
     # Theme toggle buttons
     theme_layout = QHBoxLayout()
@@ -57,7 +57,7 @@ def main():
 
     def set_theme(name):
         theme_manager.set_theme(name)
-        icon_btn.setIcon(LimIcon(icon_path))
+        # Note: Standard QIcon won't auto-tint, that's fine.
         switch.update()  # Force repaint
 
     btn_light.clicked.connect(lambda: set_theme("light"))
