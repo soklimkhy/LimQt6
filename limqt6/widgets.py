@@ -1,6 +1,21 @@
 from PyQt6.QtWidgets import QPushButton, QLabel
 
 
+class LimLabel(QLabel):
+    def __init__(self, text="", parent=None):
+        super().__init__(text, parent)
+        self.setup_style()
+
+    def setup_style(self):
+        # Basic styling for the label
+        self.setStyleSheet("""
+            LimLabel {
+                color: #333333;
+                font-size: 16px;
+            }
+        """)
+
+
 class LimButton(QPushButton):
     def __init__(self, text="", parent=None):
         super().__init__(text, parent)
@@ -22,20 +37,5 @@ class LimButton(QPushButton):
             }
             LimButton:pressed {
                 background-color: #004085;
-            }
-        """)
-
-
-class LimLabel(QLabel):
-    def __init__(self, text="", parent=None):
-        super().__init__(text, parent)
-        self.setup_style()
-
-    def setup_style(self):
-        # Basic styling for the label
-        self.setStyleSheet("""
-            LimLabel {
-                color: #333333;
-                font-size: 16px;
             }
         """)
