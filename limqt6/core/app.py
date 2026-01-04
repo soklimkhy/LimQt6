@@ -10,14 +10,7 @@ class LimApp(QApplication):
         self.apply_theme()
 
     def apply_theme(self):
-        # Placeholder for theme application
-        # Setting a basic fusion style for better cross-platform look + custom palette if needed
-        self.setStyle("Fusion")
+        # Apply the default theme (Dark) via the manager
+        from limqt6.theme.manager import theme_manager
 
-        # We can add a global stylesheet here later
-        self.setStyleSheet("""
-            QWidget {
-                font-family: 'Segoe UI', sans-serif;
-                font-size: 14px;
-            }
-        """)
+        theme_manager.apply()
