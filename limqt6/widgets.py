@@ -96,23 +96,31 @@ class LimSwitch(QCheckBox):
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
         t = theme_manager.current_theme
-
-        # Bbox for reference
         rect = self.rect()
 
+        # Track Color
         if self.isChecked():
             bg_color = QColor(t.primary)
+            border_color = Qt.GlobalColor.transparent
         else:
-            if t.name == "light":
-                bg_color = QColor("#e4e4e7")
-            else:
-                bg_color = QColor("#3f3f46")
+            bg_color = QColor(t.input_border)
+            border_color = Qt.GlobalColor.transparent
+            # Enhance definition if input border is too light
+            # For shadcn, the unchecked switch is usually a dark gray (input)
 
         painter.setBrush(QBrush(bg_color))
         painter.setPen(Qt.PenStyle.NoPen)
         painter.drawRoundedRect(0, 0, rect.width(), rect.height(), 13, 13)
 
-        painter.setBrush(QBrush(QColor("#ffffff")))
+        # Thumb Color
+        # Checked: Thumb is color of text on primary (usually white or black)
+        # Unchecked: Thumb is usually white
+        if self.isChecked():
+            thumb_color = QColor(t.primary_foreground)
+        else:
+            thumb_color = QColor("#ffffff")
+
+        painter.setBrush(QBrush(thumb_color))
         painter.drawEllipse(QPoint(int(self._position) + 10, 13), 10, 10)
 
     def hitButton(self, pos):

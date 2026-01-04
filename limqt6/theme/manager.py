@@ -29,28 +29,31 @@ class ThemeManager:
     def generate_stylesheet(self) -> str:
         t = self.current_theme
 
-        # We define the styles using f-strings to inject theme colors
+        # Shadcn/UI Inspired Stylesheet
         style = f"""
             QWidget {{
                 background-color: {t.background};
                 color: {t.text};
-                font-family: 'Segoe UI', sans-serif;
+                font-family: 'Inter', 'Segoe UI', sans-serif;
                 font-size: 14px;
             }}
 
             LimLabel {{
                 color: {t.text};
-                font-size: 16px; 
+                font-size: 14px; 
+                font-weight: 500;
                 background-color: transparent;
             }}
 
+            /* Primary Button (Shadcn default) */
             LimButton {{
                 background-color: {t.primary};
-                color: #ffffff;
-                border: none;
+                color: {t.primary_foreground};
+                border: 1px solid transparent;
                 border-radius: 6px;
                 padding: 8px 16px;
-                font-weight: bold;
+                font-weight: 500;
+                font-size: 14px;
             }}
             LimButton:hover {{
                 background-color: {t.primary_hover};
@@ -59,25 +62,29 @@ class ThemeManager:
                 background-color: {t.primary_pressed};
             }}
             LimButton:disabled {{
-                background-color: {t.surface};
-                color: {t.text_secondary};
+                background-color: {t.text_secondary}; /* simplified disabled */
+                opacity: 0.5;
             }}
 
+            /* Card: Bordered, rounded, background matches surface */
             LimCard {{
                 background-color: {t.surface};
-                border-radius: 12px;
+                border-radius: 8px;
                 border: 1px solid {t.border};
             }}
 
+            /* Input: cleaner, focus ring */
             LimInput {{
-                background-color: {t.surface};
-                border: 1px solid {t.border};
-                border-radius: 8px;
+                background-color: transparent; /* shadcn inputs are often transparent on bg */
+                border: 1px solid {t.input_border};
+                border-radius: 6px;
                 color: {t.text};
-                padding: 5px;
+                padding: 6px 12px;
+                selection-background-color: {t.text_secondary};
             }}
             LimInput:focus {{
-                border: 2px solid {t.primary};
+                border: 1px solid {t.ring};
+                /* In web we use outline-ring, here we simulate with border color */
             }}
         """
         return style

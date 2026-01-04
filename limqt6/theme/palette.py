@@ -5,6 +5,7 @@ from dataclasses import dataclass
 class ThemePalette:
     name: str
     primary: str
+    primary_foreground: str  # Text color on top of primary
     primary_hover: str
     primary_pressed: str
     background: str
@@ -12,29 +13,38 @@ class ThemePalette:
     text: str
     text_secondary: str
     border: str
+    input_border: str
+    ring: str
 
 
-# Define default palettes
+# Shadcn/UI "Zinc" Theme
+
 DARK_THEME = ThemePalette(
     name="dark",
-    primary="#3b82f6",  # Blue 500
-    primary_hover="#2563eb",  # Blue 600
-    primary_pressed="#1d4ed8",  # Blue 700
-    background="#18181b",  # Zinc 900
-    surface="#27272a",  # Zinc 800
-    text="#f4f4f5",  # Zinc 100
-    text_secondary="#a1a1aa",  # Zinc 400
-    border="#3f3f46",  # Zinc 700
+    primary="#fafafa",  # Zinc 50 (White-ish)
+    primary_foreground="#18181b",  # Zinc 900 (Black text on white btn)
+    primary_hover="#e4e4e7",  # Zinc 200
+    primary_pressed="#d4d4d8",  # Zinc 300
+    background="#09090b",  # Zinc 950 (Deep Black)
+    surface="#09090b",  # Zinc 950 (Cards blend in, defined by border)
+    text="#fafafa",  # Zinc 50
+    text_secondary="#a1a1aa",  # Zinc 400 (Muted)
+    border="#27272a",  # Zinc 800
+    input_border="#27272a",  # Zinc 800
+    ring="#d4d4d8",  # Zinc 300 (Focus ring)
 )
 
 LIGHT_THEME = ThemePalette(
     name="light",
-    primary="#2563eb",  # Blue 600
-    primary_hover="#1d4ed8",  # Blue 700
-    primary_pressed="#1e40af",  # Blue 800
+    primary="#18181b",  # Zinc 900 (Black)
+    primary_foreground="#fafafa",  # Zinc 50 (White text on black btn)
+    primary_hover="#27272a",  # Zinc 800
+    primary_pressed="#3f3f46",  # Zinc 700
     background="#ffffff",  # White
-    surface="#f4f4f5",  # Zinc 100
-    text="#18181b",  # Zinc 900
-    text_secondary="#71717a",  # Zinc 500
+    surface="#ffffff",  # White
+    text="#09090b",  # Zinc 950
+    text_secondary="#71717a",  # Zinc 500 (Muted)
     border="#e4e4e7",  # Zinc 200
+    input_border="#e4e4e7",  # Zinc 200
+    ring="#18181b",  # Zinc 900
 )
