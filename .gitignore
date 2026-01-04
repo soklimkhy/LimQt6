@@ -13,7 +13,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+/lib/
 lib64/
 parts/
 sdist/
@@ -24,3 +24,9 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+# Node.js / Vercel
+node_modules/
+.DS_Store
+.vite/
+npm-debug.log
