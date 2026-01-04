@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QApplication
-from .palette import ThemePalette, DARK_THEME, LIGHT_THEME
+from .palette import DARK_THEME, LIGHT_THEME
 
 
 class ThemeManager:
@@ -61,6 +61,23 @@ class ThemeManager:
             LimButton:disabled {{
                 background-color: {t.surface};
                 color: {t.text_secondary};
+            }}
+
+            LimCard {{
+                background-color: {t.surface};
+                border-radius: 12px;
+                border: 1px solid {t.border};
+            }}
+
+            LimInput {{
+                background-color: {t.surface};
+                border: 1px solid {t.border};
+                border-radius: 8px;
+                color: {t.text};
+                padding: 5px;
+            }}
+            LimInput:focus {{
+                border: 2px solid {t.primary};
             }}
         """
         return style

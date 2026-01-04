@@ -1,7 +1,9 @@
+import os
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 from limqt6.widgets import LimButton, LimLabel
 from limqt6.core.app import LimApp
 from limqt6.theme.manager import theme_manager
+from limqt6.icon import LimIcon
 
 
 def main():
@@ -12,15 +14,35 @@ def main():
     window.resize(400, 300)
 
     layout = QVBoxLayout(window)
+    layout.setSpacing(15)
 
+    # NEW: Import new widgets
+    from limqt6.widgets import LimInput, LimSwitch, LimCard
+
+    # 1. Card Section
+    card = LimCard()
+    card_layout = QVBoxLayout(card)
+    card_layout.addWidget(LimLabel("This is a LimCard Container"))
+
+    # 2. Input Section
+    input_field = LimInput()
+    input_field.setPlaceholderText("Type something here...")
+    card_layout.addWidget(input_field)
+
+    # 3. Switch Section
+    switch_layout = QHBoxLayout()
+    switch_layout.addWidget(LimLabel("Toggle Option:"))
+    switch = LimSwitch()
+    switch_layout.addWidget(switch)
+    switch_layout.addStretch()
+    card_layout.addLayout(switch_layout)
+
+    layout.addWidget(card)
+
+    # Standard elements
     label = LimLabel("Hello from LimQt6!")
     button = LimButton("Click Me")
 
-    # Icon Button Test
-    from limqt6.icon import LimIcon
-    import os
-
-    # Ensure assets dir exists for the demo run
     icon_path = os.path.abspath("assets/star.svg")
     icon_btn = LimButton("   Star Icon")
     icon_btn.setIcon(LimIcon(icon_path))
@@ -32,9 +54,8 @@ def main():
 
     def set_theme(name):
         theme_manager.set_theme(name)
-        # Refresh icon color manually for now
-        # In a full framework, we'd use signals to auto-update
         icon_btn.setIcon(LimIcon(icon_path))
+        switch.update()  # Force repaint
 
     btn_light.clicked.connect(lambda: set_theme("light"))
     btn_dark.clicked.connect(lambda: set_theme("dark"))
