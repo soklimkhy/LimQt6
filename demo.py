@@ -1,6 +1,6 @@
 import os
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
-from limqt6.widgets import LimButton, LimLabel
+from limqt6.widgets import LimButton, LimLabel, LimLineEdit, LimFrame, LimSwitch
 from limqt6.core.app import LimApp
 from limqt6.theme.manager import theme_manager
 from limqt6.icon import LimIcon
@@ -10,22 +10,19 @@ def main():
     app = LimApp()
 
     window = QWidget()
-    window.setWindowTitle("LimQt6 Demo - Theme Test")
+    window.setWindowTitle("LimQt6 Demo")
     window.resize(400, 300)
 
     layout = QVBoxLayout(window)
     layout.setSpacing(15)
 
-    # NEW: Import new widgets
-    from limqt6.widgets import LimInput, LimSwitch, LimCard
-
     # 1. Card Section
-    card = LimCard()
+    card = LimFrame()
     card_layout = QVBoxLayout(card)
-    card_layout.addWidget(LimLabel("This is a LimCard Container"))
+    card_layout.addWidget(LimLabel("This is a LimFrame Container"))
 
     # 2. Input Section
-    input_field = LimInput()
+    input_field = LimLineEdit()
     input_field.setPlaceholderText("Type something here...")
     card_layout.addWidget(input_field)
 
@@ -41,6 +38,7 @@ def main():
 
     # Standard elements
     label = LimLabel("Hello from LimQt6!")
+
     button = LimButton("Click Me")
 
     icon_path = os.path.abspath("assets/star.svg")

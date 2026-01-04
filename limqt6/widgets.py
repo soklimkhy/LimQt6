@@ -23,14 +23,14 @@ class LimButton(QPushButton):
         # Style handled globally
 
 
-class LimCard(QFrame):
+class LimFrame(QFrame):
     """
     A modern container with rounded corners, background color, and optional drop shadow.
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setObjectName("LimCard")
+        self.setObjectName("LimFrame")
         # Shadow effect
         self.shadow = QGraphicsDropShadowEffect(self)
         self.shadow.setBlurRadius(15)
@@ -43,7 +43,7 @@ class LimCard(QFrame):
         self.setAutoFillBackground(True)
 
 
-class LimInput(QLineEdit):
+class LimLineEdit(QLineEdit):
     """
     Enhanced QLineEdit with padding and modern styling.
     """

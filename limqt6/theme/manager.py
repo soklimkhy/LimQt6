@@ -67,14 +67,14 @@ class ThemeManager:
             }}
 
             /* Card: Bordered, rounded, background matches surface */
-            LimCard {{
+            LimFrame {{
                 background-color: {t.surface};
                 border-radius: 8px;
                 border: 1px solid {t.border};
             }}
 
             /* Input: cleaner, focus ring */
-            LimInput {{
+            LimLineEdit {{
                 background-color: transparent; /* shadcn inputs are often transparent on bg */
                 border: 1px solid {t.input_border};
                 border-radius: 6px;
@@ -82,7 +82,7 @@ class ThemeManager:
                 padding: 6px 12px;
                 selection-background-color: {t.text_secondary};
             }}
-            LimInput:focus {{
+            LimLineEdit:focus {{
                 border: 1px solid {t.ring};
                 /* In web we use outline-ring, here we simulate with border color */
             }}
