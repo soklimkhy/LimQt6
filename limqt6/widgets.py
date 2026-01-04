@@ -3,8 +3,10 @@ from PyQt6.QtWidgets import (
     QLabel,
     QLineEdit,
     QFrame,
+    QCheckBox,
     QGraphicsDropShadowEffect,
 )
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
 
 
@@ -49,3 +51,13 @@ class LimLineEdit(QLineEdit):
         super().__init__(parent)
         self.setTextMargins(3, 3, 3, 3)
         self.setMinimumHeight(33)
+
+
+class LimCheckBox(QCheckBox):
+    """
+    Styled Checkbox matching the theme system.
+    """
+
+    def __init__(self, text="", parent=None):
+        super().__init__(text, parent)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)

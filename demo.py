@@ -1,6 +1,6 @@
 import os
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
-from limqt6.widgets import LimButton, LimLabel, LimLineEdit, LimFrame
+from limqt6.widgets import LimButton, LimLabel, LimLineEdit, LimFrame, LimCheckBox
 from limqt6.widgetsplus import LimSwitch
 from limqt6.core.app import LimApp
 from limqt6.theme.manager import theme_manager
@@ -11,7 +11,7 @@ def main():
     app = LimApp()
 
     window = QWidget()
-    window.setWindowTitle("LimQt6 Demo")
+    window.setWindowTitle("LimQt6")
     window.resize(400, 300)
 
     layout = QVBoxLayout(window)
@@ -34,6 +34,10 @@ def main():
     switch_layout.addWidget(switch)
     switch_layout.addStretch()
     card_layout.addLayout(switch_layout)
+
+    # NEW: Checkbox
+    checkbox = LimCheckBox("Accept Terms & Conditions")
+    card_layout.addWidget(checkbox)
 
     layout.addWidget(card)
 

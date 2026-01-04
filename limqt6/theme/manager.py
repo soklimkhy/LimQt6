@@ -29,6 +29,17 @@ class ThemeManager:
     def generate_stylesheet(self) -> str:
         t = self.current_theme
 
+        # Locate assets
+        import os
+
+        # Assuming we are in limqt6/theme/manager.py
+        # Root is ../../
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        # Adjust for installed package structure if needed, but for dev this works
+        tick_icon_path = os.path.join(base_dir, "assets", "tick_icon.svg").replace(
+            "\\", "/"
+        )
+
         # Shadcn/UI Inspired Stylesheet
         style = f"""
             QWidget {{
@@ -53,6 +64,7 @@ class ThemeManager:
                 border-radius: 6px;
                 padding: 8px 16px;
                 font-weight: 500;
+                font-style: normal;
                 font-size: 14px;
             }}
             LimButton:hover {{
@@ -86,6 +98,28 @@ class ThemeManager:
             LimLineEdit:focus {{
                 border: 1px solid {t.ring};
                 /* In web we use outline-ring, here we simulate with border color */
+            }}
+
+            /* CheckBox: Shadcn style (Rounded square) */
+            LimCheckBox {{
+                spacing: 8px;
+                color: {t.text};
+            }}
+            LimCheckBox::indicator {{
+                width: 16px;
+                height: 16px;
+                border: 1px solid {t.input_border};
+                border-radius: 4px;
+                background-color: transparent;
+            }}
+            LimCheckBox::indicator:unchecked:hover {{
+                border: 1px solid {t.text_secondary}; /* Slightly darker on hover */
+            }}
+            LimCheckBox::indicator:checked {{
+                background-color: {t.checkbox_background};
+                border: 1px solid {t.primary};
+                image: url({tick_icon_path});
+         
             }}
         """
         return style

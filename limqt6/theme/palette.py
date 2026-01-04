@@ -15,6 +15,7 @@ class ThemePalette:
     border: str
     input_border: str
     ring: str
+    checkbox_background: str
 
 
 # Shadcn/UI "Zinc" Theme
@@ -32,11 +33,12 @@ DARK_THEME = ThemePalette(
     border="#27272a",  # Zinc 800
     input_border="#27272a",  # Zinc 800
     ring="#d4d4d8",  # Zinc 300 (Focus ring)
+    checkbox_background="#fafafa",  # 18181b
 )
 
 LIGHT_THEME = ThemePalette(
     name="light",
-    primary="#18181b",  # Zinc 900 (Black)
+    primary="#171717",  # Zinc 900 (Black)
     primary_foreground="#fafafa",  # Zinc 50 (White text on black btn)
     primary_hover="#27272a",  # Zinc 800
     primary_pressed="#3f3f46",  # Zinc 700
@@ -46,5 +48,6 @@ LIGHT_THEME = ThemePalette(
     text_secondary="#71717a",  # Zinc 500 (Muted)
     border="#e4e4e7",  # Zinc 200
     input_border="#919191",  # Zinc 200
-    ring="#18181b",  # Zinc 900
+    ring="#171717",  # Zinc 900
+    checkbox_background="transparent",  # transparent
 )
