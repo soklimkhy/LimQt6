@@ -14,10 +14,166 @@ from PyQt6.QtCore import (
     QPoint,
     pyqtProperty,  # pyright: ignore[reportAttributeAccessIssue, reportUnknownVariableType]
 )
-from PyQt6.QtGui import QColor, QPainter, QBrush, QIcon, QPaintEvent
+from PyQt6.QtGui import QColor, QPainter, QBrush, QIcon, QPaintEvent, QMouseEvent
 from limqt6.theme.manager import theme_manager
 
 _ASSETS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets")
+
+
+class LimCarousel(LimWidget):
+    """
+    A swipeable, animated carousel component inspired by Embla Carousel.
+    Add widgets as slides and swipe horizontally to navigate.
+    """
+
+    def __init__(self, parent: LimWidget | None = None):
+        super().__init__(parent)
+        self.setObjectName("LimCarousel")
+        self.setCursor(Qt.CursorShape.OpenHandCursor)
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        
+        self.container = LimWidget(self)
+        self.container.setObjectName("LimCarouselContainer")
+        self.container_layout = LimHBoxLayout(self.container)
+        self.container_layout.setContentsMargins(0, 0, 0, 0)
+        self.container_layout.setSpacing(16)
+        
+        self.animation = QPropertyAnimation(self.container, b"pos", self)
+        self.animation.setDuration(400)
+        self.animation.setEasingCurve(QEasingCurve.Type.OutCubic)
+        
+        self._slides: list[LimWidget] = []
+        
+        # Dragging state
+        self._is_dragging = False
+        self._start_x = 0
+        self._start_pos_x = 0
+        self._current_index = 0
+
+        self.prev_btn = LimButton("<", self)
+        self.prev_btn.setObjectName("LimCarouselPrevBtn")
+        self.prev_btn.setFixedSize(30, 30)
+        self.prev_btn.clicked.connect(self.prev)
+        self.prev_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+
+        self.next_btn = LimButton(">", self)
+        self.next_btn.setObjectName("LimCarouselNextBtn")
+        self.next_btn.setFixedSize(30, 30)
+        self.next_btn.clicked.connect(self.next)
+        self.next_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+
+    def add_slide(self, widget: LimWidget):
+        self._slides.append(widget)
+        self.container_layout.addWidget(widget)
+        self._update_container_width()
+        
+    def _update_container_width(self):
+        self.container.adjustSize()
+
+    def sizeHint(self) -> QSize:
+        # Provide a reasonable default size so it doesn't collapse to 0
+        return QSize(400, 150)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._update_container_width()
+        self.snap_to(self._current_index)
+        
+        # Position buttons vertically centered at edges
+        btn_y = (self.height() - self.prev_btn.height()) // 2
+        self.prev_btn.move(10, btn_y)
+        self.next_btn.move(self.width() - self.next_btn.width() - 10, btn_y)
+        self.prev_btn.raise_()
+        self.next_btn.raise_()
+
+    def mousePressEvent(self, event: QMouseEvent):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self._is_dragging = True
+            self._start_x = int(event.globalPosition().x())
+            self._start_pos_x = self.container.pos().x()
+            self.animation.stop()
+            self.setCursor(Qt.CursorShape.ClosedHandCursor)
+            event.accept()
+
+    def mouseMoveEvent(self, event: QMouseEvent):
+        if self._is_dragging:
+            delta = int(event.globalPosition().x()) - self._start_x
+            new_x = self._start_pos_x + delta
+            
+            # Simple rubber band effect
+            max_x = 0
+            min_x = self.width() - self.container.width()
+            if min_x > 0:
+                min_x = 0
+                
+            if new_x > max_x:
+                new_x = int(max_x + (new_x - max_x) * 0.3)
+            elif new_x < min_x:
+                new_x = int(min_x + (new_x - min_x) * 0.3)
+                
+            self.container.move(new_x, self.container.pos().y())
+            event.accept()
+
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        if event.button() == Qt.MouseButton.LeftButton and self._is_dragging:
+            self._is_dragging = False
+            self.setCursor(Qt.CursorShape.OpenHandCursor)
+            
+            current_x = self.container.pos().x()
+            best_idx = 0
+            min_dist = float('inf')
+            
+            for i, slide in enumerate(self._slides):
+                slide_center = slide.pos().x() + slide.width() / 2
+                viewport_center = self.width() / 2 - current_x
+                
+                dist = abs(slide_center - viewport_center)
+                if dist < min_dist:
+                    min_dist = dist
+                    best_idx = i
+            
+            self.snap_to(best_idx)
+            event.accept()
+            
+    def snap_to(self, index: int):
+        if not self._slides:
+            return
+            
+        index = max(0, min(index, len(self._slides) - 1))
+        self._current_index = index
+        
+        target_slide = self._slides[index]
+        viewport_center = self.width() / 2
+        slide_center = target_slide.pos().x() + target_slide.width() / 2
+        
+        target_x = int(viewport_center - slide_center)
+        
+        max_x = 0
+        min_x = self.width() - self.container.width()
+        if min_x > 0:
+            min_x = 0
+            
+        target_x = max(min_x, min(target_x, max_x))
+        
+        self.animation.setStartValue(self.container.pos())
+        self.animation.setEndValue(QPoint(target_x, self.container.pos().y()))
+        self.animation.start()
+
+    def next(self):
+        if not self._slides:
+            return
+        next_idx = self._current_index + 1
+        if next_idx >= len(self._slides):
+            next_idx = 0
+        self.snap_to(next_idx)
+        
+    def prev(self):
+        if not self._slides:
+            return
+        prev_idx = self._current_index - 1
+        if prev_idx < 0:
+            prev_idx = len(self._slides) - 1
+        self.snap_to(prev_idx)
 
 
 class LimBadge(LimWidget):

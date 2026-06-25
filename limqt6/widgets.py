@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
     QButtonGroup,
     QScrollArea,
     QPlainTextEdit,
+    QComboBox,
 )
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
@@ -108,4 +109,15 @@ class LimPlainTextEdit(QPlainTextEdit):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("LimPlainTextEdit")
+
+
+class LimComboBox(QComboBox):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setObjectName("LimComboBox")
+        # Ensure the popup is also styled correctly
+        self.view().window().setWindowFlags(
+            Qt.WindowType.Popup | Qt.WindowType.FramelessWindowHint | Qt.WindowType.NoDropShadowWindowHint
+        )
+        self.view().window().setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 

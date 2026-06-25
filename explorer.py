@@ -22,8 +22,9 @@ from limqt6.widgets import (
     LimButtonGroup,
     LimScrollArea,
     LimPlainTextEdit,
+    LimComboBox,
 )
-from limqt6.widgetsplus import LimSwitch, LimThemeSwitcher, LimBadge
+from limqt6.widgetsplus import LimSwitch, LimThemeSwitcher, LimBadge, LimCarousel
 from limqt6.layout import (
     LimNavItem,
     LimSidebar,
@@ -38,6 +39,7 @@ from limqt6.dialog import LimDialog
 # from the class and its docstring.
 _USAGE = {
     "LimButton": 'button = LimButton("Click Me")\nbutton.clicked.connect(handler)',
+    "LimComboBox": 'combo = LimComboBox()\ncombo.addItems(["Option 1", "Option 2"])',
     "LimCheckBox": 'check = LimCheckBox("Accept Terms & Conditions")\ncheck.stateChanged.connect(handler)',
     "LimDialog": 'dialog = LimDialog("Confirm action", parent)\nlayout = LimVBoxLayout(dialog.content)\ndialog.add_action(LimButton("OK"))',
     "LimFrame": 'card = LimFrame()\nlayout = LimVBoxLayout(card)\nlayout.addWidget(LimLabel("Card Title"))',
@@ -49,6 +51,7 @@ _USAGE = {
     "LimSwitch": "switch = LimSwitch()\nswitch.toggled.connect(handler)",
     "LimThemeSwitcher": "switcher = LimThemeSwitcher()\nnavbar.add_action(switcher)",
     "LimButtonGroup": 'group = LimButtonGroup(parent)\ngroup.addButton(btn1)\ngroup.addButton(btn2)',
+    "LimCarousel": 'carousel = LimCarousel()\ncarousel.add_slide(LimLabel("Slide 1"))',
     "LimBadge": 'badge = LimBadge("Verified", "assets/tick_icon.svg")',
     "LimHBoxLayout": 'layout = LimHBoxLayout()\nlayout.addWidget(btn1)',
     "LimPlainTextEdit": 'editor = LimPlainTextEdit()\neditor.setPlainText("Hello World!")',
@@ -64,6 +67,35 @@ def _preview_lim_badge():
 def _preview_lim_button():
     return LimButton("Click Me")
 
+def _preview_lim_combobox():
+    combo = LimComboBox()
+    combo.addItems(["Option 1", "Option 2", "Option 3"])
+    combo.setFixedWidth(150)
+    return combo
+
+
+def _preview_lim_carousel():
+    carousel = LimCarousel()
+    carousel.setFixedSize(400, 120)
+    
+    letters = ["A", "B", "C"]
+    colors = ["#ef4444", "#f97316", "#eab308"]
+    
+    for i, letter in enumerate(letters):
+        w = LimWidget()
+        w.setFixedSize(160, 100)
+        w.setStyleSheet(f"background-color: {colors[i]}; border-radius: 8px;")
+        
+        layout = LimVBoxLayout(w)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        lbl = LimLabel(letter)
+        lbl.setStyleSheet("font-size: 48px; font-weight: bold; color: white;")
+        layout.addWidget(lbl)
+        
+        carousel.add_slide(w)
+        
+    return carousel
 
 def _preview_lim_checkbox():
     return LimCheckBox("Accept Terms & Conditions")
@@ -184,6 +216,7 @@ def _preview_lim_widget():
 
 _PREVIEWS = {
     "LimButton": _preview_lim_button,
+    "LimComboBox": _preview_lim_combobox,
     "LimCheckBox": _preview_lim_checkbox,
     "LimDialog": _preview_lim_dialog,
     "LimFrame": _preview_lim_frame,
@@ -195,6 +228,7 @@ _PREVIEWS = {
     "LimSwitch": _preview_lim_switch,
     "LimThemeSwitcher": _preview_lim_theme_switcher,
     "LimButtonGroup": _preview_lim_button_group,
+    "LimCarousel": _preview_lim_carousel,
     "LimBadge": _preview_lim_badge,
     "LimHBoxLayout": _preview_lim_h_box_layout,
     "LimPlainTextEdit": _preview_lim_plain_text_edit,
@@ -205,6 +239,7 @@ _PREVIEWS = {
 
 _CLASSES = [
     LimButton,
+    LimComboBox,
     LimCheckBox,
     LimDialog,
     LimFrame,
@@ -216,6 +251,7 @@ _CLASSES = [
     LimSwitch,
     LimThemeSwitcher,
     LimButtonGroup,
+    LimCarousel,
     LimBadge,
     LimHBoxLayout,
     LimPlainTextEdit,

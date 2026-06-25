@@ -1,4 +1,6 @@
 from PyQt6.QtWidgets import QApplication
+from PyQt6.QtGui import QPixmap, QPainter, QColor, QPen, QPainterPath
+from PyQt6.QtCore import Qt
 from .palette import DARK_THEME, LIGHT_THEME
 
 
@@ -39,6 +41,30 @@ class ThemeManager:
         tick_icon_path = os.path.join(base_dir, "assets", "tick_icon.svg").replace(
             "\\", "/"
         )
+        # Draw chevron using QPainter dynamically
+        pixmap = QPixmap(24, 24)
+        pixmap.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(pixmap)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        
+        pen = QPen(QColor(t.text_secondary))
+        pen.setWidth(2)
+        pen.setCapStyle(Qt.PenCapStyle.RoundCap)
+        pen.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
+        painter.setPen(pen)
+        
+        path = QPainterPath()
+        path.moveTo(6, 9)
+        path.lineTo(12, 15)
+        path.lineTo(18, 9)
+        painter.drawPath(path)
+        painter.end()
+        
+        chevron_png_path = os.path.join(base_dir, "assets", "chevron_down.png").replace("\\", "/")
+        try:
+            pixmap.save(chevron_png_path, "PNG")
+        except Exception:
+            pass
 
         # Shadcn/UI Inspired Stylesheet
         style = f"""
@@ -119,6 +145,59 @@ class ThemeManager:
                 border: 1px solid {t.primary};
                 image: url({tick_icon_path});
 
+            }}
+
+            /* ComboBox */
+            LimComboBox {{
+                background-color: {t.background};
+                color: {t.text};
+                border: 1px solid {t.border};
+                border-radius: 6px;
+                padding: 6px 12px;
+                min-height: 18px;
+                font-size: 14px;
+            }}
+            LimComboBox:hover {{
+                border: 1px solid {t.text_secondary};
+            }}
+            LimComboBox:focus {{
+                border: 1px solid {t.primary};
+            }}
+            LimComboBox::drop-down {{
+                subcontrol-origin: padding;
+                subcontrol-position: top right;
+                width: 32px;
+                border: none;
+                background: transparent;
+            }}
+            LimComboBox::down-arrow {{
+                image: url({chevron_png_path});
+                width: 14px;
+                height: 14px;
+            }}
+            LimComboBox QAbstractItemView, 
+            LimComboBox QListView {{
+                background-color: {t.surface};
+                border: 1px solid {t.border};
+                border-radius: 6px;
+                selection-background-color: transparent;
+                selection-color: {t.text};
+                padding: 4px;
+                outline: none;
+            }}
+            LimComboBox QAbstractItemView::item, 
+            LimComboBox QListView::item {{
+                min-height: 28px;
+                padding-left: 8px;
+                border-radius: 4px;
+                margin: 2px 0px;
+            }}
+            LimComboBox QAbstractItemView::item:hover,
+            LimComboBox QAbstractItemView::item:selected,
+            LimComboBox QListView::item:hover,
+            LimComboBox QListView::item:selected {{
+                background-color: {t.accent};
+                color: {t.accent_foreground};
             }}
 
             /* Sidebar: vertical nav panel */
@@ -255,6 +334,15 @@ class ThemeManager:
                 color: {t.accent_foreground};
                 font-size: 12px;
                 font-weight: 600;
+                background-color: transparent;
+            }}
+
+            /* Carousel */
+            LimWidget#LimCarousel {{
+                background-color: transparent;
+                border-radius: 8px;
+            }}
+            LimWidget#LimCarouselContainer {{
                 background-color: transparent;
             }}
         """
