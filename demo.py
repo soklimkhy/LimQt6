@@ -3,11 +3,12 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 from limqt6.widgets import LimButton, LimLabel, LimLineEdit, LimFrame, LimCheckBox
 from limqt6.widgetsplus import LimSwitch, LimThemeSwitcher
 from limqt6.layout import LimSidebar, LimNavbar
+from limqt6.dialog import LimDialog
 from limqt6.core.app import LimApp
 from PyQt6.QtGui import QIcon
 
 
-def build_content() -> tuple[QWidget, LimSwitch]:
+def build_content() -> tuple[QWidget, LimSwitch, LimButton]:
     content = QWidget()
     layout = QVBoxLayout(content)
     layout.setContentsMargins(20, 20, 20, 20)
@@ -46,12 +47,32 @@ def build_content() -> tuple[QWidget, LimSwitch]:
     icon_btn = LimButton("   Star Icon")
     icon_btn.setIcon(QIcon(icon_path))
 
+    dialog_btn = LimButton("Open Dialog")
+
     layout.addWidget(label)
     layout.addWidget(button)
     layout.addWidget(icon_btn)
+    layout.addWidget(dialog_btn)
     layout.addStretch()
 
-    return content, switch
+    return content, switch, dialog_btn
+
+
+def open_demo_dialog(parent: QWidget) -> None:
+    dialog = LimDialog("Confirm action", parent)
+    dialog.resize(360, 180)
+
+    content_layout = QVBoxLayout(dialog.content)
+    content_layout.addWidget(LimLabel("Are you sure you want to continue?"))
+
+    cancel_btn = LimButton("Cancel")
+    cancel_btn.clicked.connect(dialog.reject)
+    confirm_btn = LimButton("Confirm")
+    confirm_btn.clicked.connect(dialog.accept)
+    dialog.add_action(cancel_btn)
+    dialog.add_action(confirm_btn)
+
+    dialog.exec()
 
 
 def main():
@@ -84,12 +105,13 @@ def main():
     navbar.add_action(theme_switcher)
     right_layout.addWidget(navbar)
 
-    content, switch = build_content()
+    content, switch, dialog_btn = build_content()
     right_layout.addWidget(content)
 
     root_layout.addWidget(right_panel)
 
     theme_switcher.clicked.connect(switch.update)  # Force repaint after theme change
+    dialog_btn.clicked.connect(lambda: open_demo_dialog(window))
 
     window.show()
 

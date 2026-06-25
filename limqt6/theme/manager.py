@@ -160,6 +160,41 @@ class ThemeManager:
                 background-color: {t.accent};
             }}
 
+            /* Dialog: frameless modal card with header/content/footer */
+            QFrame#LimDialogCard {{
+                background-color: {t.surface};
+                border-radius: 12px;
+                border: 1px solid {t.border};
+            }}
+            QWidget#LimDialogHeader {{
+                background-color: transparent;
+                border-bottom: 1px solid {t.border};
+            }}
+            QLabel#LimDialogTitle {{
+                font-size: 16px;
+                font-weight: 600;
+                background-color: transparent;
+            }}
+            QPushButton#LimDialogCloseButton {{
+                background-color: transparent;
+                color: {t.text_secondary};
+                border: none;
+                border-radius: 6px;
+                padding: 0px;
+            }}
+            QPushButton#LimDialogCloseButton:hover {{
+                background-color: {t.accent};
+                color: {t.accent_foreground};
+            }}
+            QWidget#LimDialogContent {{
+                background-color: transparent;
+                padding: 16px;
+            }}
+            QWidget#LimDialogFooter {{
+                background-color: transparent;
+                border-top: 1px solid {t.border};
+            }}
+
             /* Nav item: entries inside LimSidebar/LimNavbar */
             LimNavItem {{
                 background-color: transparent;
