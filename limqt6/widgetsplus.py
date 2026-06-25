@@ -1,5 +1,11 @@
 import os
-from PyQt6.QtWidgets import QWidget, QCheckBox, QPushButton
+from limqt6.widgets import (
+    LimWidget,
+    LimCheckBox,
+    LimButton,
+    LimLabel,
+)
+from limqt6.layout import LimHBoxLayout
 from PyQt6.QtCore import (
     Qt,
     QSize,
@@ -14,12 +20,37 @@ from limqt6.theme.manager import theme_manager
 _ASSETS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets")
 
 
-class LimSwitch(QCheckBox):
+class LimBadge(LimWidget):
+    """
+    A small badge component to display status or tags (e.g. 'Verified').
+    Can optionally include an icon.
+    """
+
+    def __init__(self, text: str, icon_path: str | None = None, parent: LimWidget | None = None):
+        super().__init__(parent)
+        self.setObjectName("LimBadge")
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        
+        layout = LimHBoxLayout(self)
+        layout.setContentsMargins(8, 4, 8, 4)
+        layout.setSpacing(6)
+        
+        if icon_path:
+            self.icon_label = LimLabel("", self)
+            self.icon_label.setPixmap(QIcon(icon_path).pixmap(14, 14))
+            layout.addWidget(self.icon_label)
+            
+        self.text_label = LimLabel(text, self)
+        self.text_label.setObjectName("LimBadgeText")
+        layout.addWidget(self.text_label)
+
+
+class LimSwitch(LimCheckBox):
     """
     A Toggle Switch replacement for QCheckBox.
     """
 
-    def __init__(self, parent: QWidget | None = None):
+    def __init__(self, parent: LimWidget | None = None):
         super().__init__(parent)
         self.setFixedSize(50, 26)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -86,13 +117,13 @@ class LimSwitch(QCheckBox):
 ############## THEME SWITCHER ###################
 
 
-class LimThemeSwitcher(QPushButton):
+class LimThemeSwitcher(LimButton):
     """
     Icon-only button that toggles between light/dark themes. Shows a sun
     icon while in light mode and a moon icon while in dark mode.
     """
 
-    def __init__(self, parent: QWidget | None = None):
+    def __init__(self, parent: LimWidget | None = None):
         super().__init__(parent)
         self.setObjectName("LimThemeSwitcher")
         self.setCursor(Qt.CursorShape.PointingHandCursor)

@@ -8,10 +8,7 @@ import inspect
 from dataclasses import dataclass
 from typing import Callable
 
-from PyQt6.QtWidgets import (
-    QWidget,
-    QFrame,
-)
+
 
 from PyQt6.QtCore import pyqtSignal, Qt
 
@@ -26,7 +23,7 @@ from limqt6.widgets import (
     LimScrollArea,
     LimPlainTextEdit,
 )
-from limqt6.widgetsplus import LimSwitch, LimThemeSwitcher
+from limqt6.widgetsplus import LimSwitch, LimThemeSwitcher, LimBadge
 from limqt6.layout import (
     LimNavItem,
     LimSidebar,
@@ -51,8 +48,18 @@ _USAGE = {
     "LimSidebar": 'sidebar = LimSidebar("LimQt6")\nsidebar.add_item("Dashboard", checked=True)\nsidebar.add_item("Settings")',
     "LimSwitch": "switch = LimSwitch()\nswitch.toggled.connect(handler)",
     "LimThemeSwitcher": "switcher = LimThemeSwitcher()\nnavbar.add_action(switcher)",
+    "LimButtonGroup": 'group = LimButtonGroup(parent)\ngroup.addButton(btn1)\ngroup.addButton(btn2)',
+    "LimBadge": 'badge = LimBadge("Verified", "assets/tick_icon.svg")',
+    "LimHBoxLayout": 'layout = LimHBoxLayout()\nlayout.addWidget(btn1)',
+    "LimPlainTextEdit": 'editor = LimPlainTextEdit()\neditor.setPlainText("Hello World!")',
+    "LimScrollArea": 'scroll = LimScrollArea()\nscroll.setWidget(content_widget)',
+    "LimVBoxLayout": 'layout = LimVBoxLayout()\nlayout.addWidget(btn1)',
+    "LimWidget": 'widget = LimWidget()\nlayout = LimVBoxLayout(widget)',
 }
 
+
+def _preview_lim_badge():
+    return LimBadge("Verified", "assets/tick_icon.svg")
 
 def _preview_lim_button():
     return LimButton("Click Me")
@@ -125,6 +132,56 @@ def _preview_lim_theme_switcher():
     return LimThemeSwitcher()
 
 
+def _preview_lim_button_group():
+    w = LimWidget()
+    layout = LimHBoxLayout(w)
+    grp = LimButtonGroup(w)
+    b1 = LimButton("Option 1")
+    b1.setCheckable(True)
+    b2 = LimButton("Option 2")
+    b2.setCheckable(True)
+    grp.addButton(b1)
+    grp.addButton(b2)
+    layout.addWidget(b1)
+    layout.addWidget(b2)
+    return w
+
+def _preview_lim_h_box_layout():
+    w = LimWidget()
+    layout = LimHBoxLayout(w)
+    layout.addWidget(LimButton("Left"))
+    layout.addWidget(LimButton("Right"))
+    return w
+
+def _preview_lim_plain_text_edit():
+    te = LimPlainTextEdit()
+    te.setPlainText("This is a LimPlainTextEdit.\nIt supports multiple lines.")
+    return te
+
+def _preview_lim_scroll_area():
+    s = LimScrollArea()
+    s.setFixedSize(200, 100)
+    w = LimWidget()
+    layout = LimVBoxLayout(w)
+    for i in range(5):
+        layout.addWidget(LimLabel(f"Scroll item {i+1}"))
+    s.setWidget(w)
+    return s
+
+def _preview_lim_v_box_layout():
+    w = LimWidget()
+    layout = LimVBoxLayout(w)
+    layout.addWidget(LimButton("Top"))
+    layout.addWidget(LimButton("Bottom"))
+    return w
+
+def _preview_lim_widget():
+    w = LimWidget()
+    w.setFixedSize(100, 100)
+    w.setStyleSheet("background-color: #3b82f6; border-radius: 8px;")
+    return w
+
+
 _PREVIEWS = {
     "LimButton": _preview_lim_button,
     "LimCheckBox": _preview_lim_checkbox,
@@ -137,6 +194,13 @@ _PREVIEWS = {
     "LimSidebar": _preview_lim_sidebar,
     "LimSwitch": _preview_lim_switch,
     "LimThemeSwitcher": _preview_lim_theme_switcher,
+    "LimButtonGroup": _preview_lim_button_group,
+    "LimBadge": _preview_lim_badge,
+    "LimHBoxLayout": _preview_lim_h_box_layout,
+    "LimPlainTextEdit": _preview_lim_plain_text_edit,
+    "LimScrollArea": _preview_lim_scroll_area,
+    "LimVBoxLayout": _preview_lim_v_box_layout,
+    "LimWidget": _preview_lim_widget,
 }
 
 _CLASSES = [
@@ -151,6 +215,13 @@ _CLASSES = [
     LimSidebar,
     LimSwitch,
     LimThemeSwitcher,
+    LimButtonGroup,
+    LimBadge,
+    LimHBoxLayout,
+    LimPlainTextEdit,
+    LimScrollArea,
+    LimVBoxLayout,
+    LimWidget,
 ]
 
 
@@ -159,7 +230,7 @@ class ComponentInfo:
     name: str
     description: str
     usage: str
-    preview_factory: Callable[[], QWidget] | None = None
+    preview_factory: Callable[[], LimWidget] | None = None
 
 
 COMPONENTS: list[ComponentInfo] = sorted(
@@ -184,7 +255,7 @@ class ComponentListPanel(LimWidget):
 
     componentSelected = pyqtSignal(str)
 
-    def __init__(self, parent: QWidget | None = None):
+    def __init__(self, parent: LimWidget | None = None):
         super().__init__(parent)
         self.setObjectName("ComponentListPanel")
         self.setFixedWidth(220)
@@ -200,7 +271,7 @@ class ComponentListPanel(LimWidget):
 
         scroll = LimScrollArea(self)
         scroll.setWidgetResizable(True)
-        scroll.setFrameShape(QFrame.Shape.NoFrame)
+        scroll.setFrameShape(LimScrollArea.Shape.NoFrame)
 
         list_container = LimWidget()
         self._list_layout = LimVBoxLayout(list_container)
@@ -242,7 +313,7 @@ class ComponentListPanel(LimWidget):
 class ComponentDetailPanel(LimFrame):
     """Shows the title, description, preview, and usage snippet for the selected component."""
 
-    def __init__(self, parent: QWidget | None = None):
+    def __init__(self, parent: LimWidget | None = None):
         super().__init__(parent)
 
         layout = LimVBoxLayout(self)
@@ -264,10 +335,10 @@ class ComponentDetailPanel(LimFrame):
         preview_label.setObjectName("ComponentDetailSectionTitle")
         layout.addWidget(preview_label)
 
-        self.preview_frame = QFrame()
+        self.preview_frame = LimWidget()
         self.preview_frame.setObjectName("ComponentPreviewFrame")
         self.preview_frame.setStyleSheet(
-            "QFrame#ComponentPreviewFrame { border: 1px solid rgba(150, 150, 150, 0.4); border-radius: 8px; }"
+            "LimWidget#ComponentPreviewFrame { border: 1px solid rgba(150, 150, 150, 0.4); border-radius: 8px; }"
         )
         self.preview_layout = LimVBoxLayout(self.preview_frame)
         self.preview_layout.setContentsMargins(16, 16, 16, 16)
@@ -318,7 +389,7 @@ class ComponentDetailPanel(LimFrame):
 class LimComponentExplorer(LimWidget):
     """Combines the list panel and detail panel into a single browsable page."""
 
-    def __init__(self, parent: QWidget | None = None):
+    def __init__(self, parent: LimWidget | None = None):
         super().__init__(parent)
 
         layout = LimHBoxLayout(self)
@@ -340,3 +411,7 @@ class LimComponentExplorer(LimWidget):
         info = next((c for c in COMPONENTS if c.name == name), None)
         if info is not None:
             self.detail_panel.show_component(info)
+
+    def toggle_sidebar(self) -> None:
+        self.list_panel.setVisible(not self.list_panel.isVisible())
+

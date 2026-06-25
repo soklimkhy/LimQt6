@@ -245,6 +245,18 @@ class ThemeManager:
                 color: {t.accent_foreground};
                 font-weight: 600;
             }}
+
+            /* Badge: small inline label */
+            LimWidget#LimBadge {{
+                background-color: {t.accent};
+                border-radius: 12px;
+            }}
+            LimLabel#LimBadgeText {{
+                color: {t.accent_foreground};
+                font-size: 12px;
+                font-weight: 600;
+                background-color: transparent;
+            }}
         """
         return style
 

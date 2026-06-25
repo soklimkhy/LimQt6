@@ -27,6 +27,9 @@ def main():
     explorer = LimComponentExplorer()
     root_layout.addWidget(explorer)
 
+    # Wire up the hamburger button
+    navbar.set_menu_callback(explorer.toggle_sidebar)
+
     window.show()
 
     app.exec()
