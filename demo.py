@@ -1,5 +1,6 @@
 
-from PyQt6.QtWidgets import QWidget, QVBoxLayout
+from limqt6.widgets import LimWidget
+from limqt6.layout import LimVBoxLayout
 from limqt6.widgetsplus import LimThemeSwitcher
 from limqt6.layout import LimNavbar
 from limqt6.core.app import LimApp
@@ -8,11 +9,11 @@ from explorer import LimComponentExplorer
 def main():
     app = LimApp()
 
-    window = QWidget()
+    window = LimWidget()
     window.setWindowTitle("LimQt6")
     window.resize(840, 520)
 
-    root_layout = QVBoxLayout(window)
+    root_layout = LimVBoxLayout(window)
     root_layout.setContentsMargins(0, 0, 0, 0)
     root_layout.setSpacing(0)
 

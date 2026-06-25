@@ -6,23 +6,34 @@ the selected widget's description, a preview, and a usage snippet.
 
 import inspect
 from dataclasses import dataclass
-from typing import Callable, Optional
+from typing import Callable
 
 from PyQt6.QtWidgets import (
     QWidget,
-    QVBoxLayout,
-    QHBoxLayout,
-    QButtonGroup,
-    QScrollArea,
-    QPlainTextEdit,
     QFrame,
 )
 
 from PyQt6.QtCore import pyqtSignal, Qt
 
-from limqt6.widgets import LimLabel, LimButton, LimLineEdit, LimCheckBox, LimFrame
+from limqt6.widgets import (
+    LimLabel,
+    LimButton,
+    LimLineEdit,
+    LimCheckBox,
+    LimFrame,
+    LimWidget,
+    LimButtonGroup,
+    LimScrollArea,
+    LimPlainTextEdit,
+)
 from limqt6.widgetsplus import LimSwitch, LimThemeSwitcher
-from limqt6.layout import LimNavItem, LimSidebar, LimNavbar
+from limqt6.layout import (
+    LimNavItem,
+    LimSidebar,
+    LimNavbar,
+    LimVBoxLayout,
+    LimHBoxLayout,
+)
 from limqt6.dialog import LimDialog
 
 # Usage snippets aren't derivable from the class itself, so they're kept here
@@ -31,8 +42,8 @@ from limqt6.dialog import LimDialog
 _USAGE = {
     "LimButton": 'button = LimButton("Click Me")\nbutton.clicked.connect(handler)',
     "LimCheckBox": 'check = LimCheckBox("Accept Terms & Conditions")\ncheck.stateChanged.connect(handler)',
-    "LimDialog": 'dialog = LimDialog("Confirm action", parent)\nlayout = QVBoxLayout(dialog.content)\ndialog.add_action(LimButton("OK"))',
-    "LimFrame": "card = LimFrame()\nlayout = QVBoxLayout(card)\nlayout.addWidget(LimLabel(\"Card Title\"))",
+    "LimDialog": 'dialog = LimDialog("Confirm action", parent)\nlayout = LimVBoxLayout(dialog.content)\ndialog.add_action(LimButton("OK"))',
+    "LimFrame": 'card = LimFrame()\nlayout = LimVBoxLayout(card)\nlayout.addWidget(LimLabel("Card Title"))',
     "LimLabel": 'label = LimLabel("Hello from LimQt6!")',
     "LimLineEdit": 'field = LimLineEdit()\nfield.setPlaceholderText("Type something here...")',
     "LimNavbar": 'navbar = LimNavbar("Dashboard")\nnavbar.set_menu_callback(sidebar.toggle)\nnavbar.add_action(LimButton("Action"))',
@@ -42,50 +53,61 @@ _USAGE = {
     "LimThemeSwitcher": "switcher = LimThemeSwitcher()\nnavbar.add_action(switcher)",
 }
 
+
 def _preview_lim_button():
     return LimButton("Click Me")
+
 
 def _preview_lim_checkbox():
     return LimCheckBox("Accept Terms & Conditions")
 
+
 def _preview_lim_dialog():
     btn = LimButton("Open Demo Dialog")
+
     def on_click():
         d = LimDialog("Confirm action", btn)
         d.resize(300, 150)
-        l = QVBoxLayout(d.content)
-        l.addWidget(LimLabel("Are you sure?"))
+        layout = LimVBoxLayout(d.content)
+        layout.addWidget(LimLabel("Are you sure?"))
         ok = LimButton("OK")
         ok.clicked.connect(d.accept)
         d.add_action(ok)
         d.exec()
+
     btn.clicked.connect(on_click)
     return btn
 
+
 def _preview_lim_frame():
     f = LimFrame()
-    l = QVBoxLayout(f)
-    l.addWidget(LimLabel("Card Title"))
-    l.addWidget(LimLabel("This is inside a frame."))
+    layout = LimVBoxLayout(f)
+    layout.addWidget(LimLabel("Card Title"))
+    layout.addWidget(LimLabel("This is inside a frame."))
     return f
+
 
 def _preview_lim_label():
     return LimLabel("Hello from LimQt6!")
+
 
 def _preview_lim_line_edit():
     le = LimLineEdit()
     le.setPlaceholderText("Type something here...")
     return le
 
+
 def _preview_lim_navbar():
     n = LimNavbar("Dashboard")
     n.add_action(LimButton("Action"))
     return n
 
+
 def _preview_lim_nav_item():
     item = LimNavItem("Dashboard")
     item.setChecked(True)
     return item
+
 
 def _preview_lim_sidebar():
     s = LimSidebar("LimQt6")
@@ -94,11 +116,14 @@ def _preview_lim_sidebar():
     s.setFixedHeight(200)
     return s
 
+
 def _preview_lim_switch():
     return LimSwitch()
 
+
 def _preview_lim_theme_switcher():
     return LimThemeSwitcher()
+
 
 _PREVIEWS = {
     "LimButton": _preview_lim_button,
@@ -154,7 +179,7 @@ COMPONENTS: list[ComponentInfo] = sorted(
 ############## LIST PANEL ###################
 
 
-class ComponentListPanel(QWidget):
+class ComponentListPanel(LimWidget):
     """Search box + A-Z list of components. Emits componentSelected(name)."""
 
     componentSelected = pyqtSignal(str)
@@ -164,7 +189,7 @@ class ComponentListPanel(QWidget):
         self.setObjectName("ComponentListPanel")
         self.setFixedWidth(220)
 
-        root = QVBoxLayout(self)
+        root = LimVBoxLayout(self)
         root.setContentsMargins(12, 12, 12, 12)
         root.setSpacing(8)
 
@@ -173,26 +198,28 @@ class ComponentListPanel(QWidget):
         self.search.textChanged.connect(self._filter)
         root.addWidget(self.search)
 
-        scroll = QScrollArea(self)
+        scroll = LimScrollArea(self)
         scroll.setWidgetResizable(True)
         scroll.setFrameShape(QFrame.Shape.NoFrame)
 
-        list_container = QWidget()
-        self._list_layout = QVBoxLayout(list_container)
+        list_container = LimWidget()
+        self._list_layout = LimVBoxLayout(list_container)
         self._list_layout.setContentsMargins(0, 0, 0, 0)
         self._list_layout.setSpacing(2)
         self._list_layout.addStretch()
         scroll.setWidget(list_container)
         root.addWidget(scroll)
 
-        self._group = QButtonGroup(self)
+        self._group = LimButtonGroup(self)
         self._group.setExclusive(True)
         self._items: dict[str, LimNavItem] = {}
 
         for component in COMPONENTS:
             item = LimNavItem(component.name)
             item.toggled.connect(
-                lambda checked, name=component.name: checked and self.componentSelected.emit(name)
+                lambda checked, name=component.name: (
+                    checked and self.componentSelected.emit(name)
+                )
             )
             self._group.addButton(item)
             self._list_layout.insertWidget(self._list_layout.count() - 1, item)
@@ -218,7 +245,7 @@ class ComponentDetailPanel(LimFrame):
     def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
 
-        layout = QVBoxLayout(self)
+        layout = LimVBoxLayout(self)
         layout.setContentsMargins(24, 24, 24, 24)
         layout.setSpacing(12)
 
@@ -230,7 +257,7 @@ class ComponentDetailPanel(LimFrame):
         self.description.setObjectName("ComponentDetailDescription")
         self.description.setWordWrap(True)
         layout.addWidget(self.description)
-        
+
         layout.addSpacing(12)
 
         preview_label = LimLabel("Preview")
@@ -242,11 +269,13 @@ class ComponentDetailPanel(LimFrame):
         self.preview_frame.setStyleSheet(
             "QFrame#ComponentPreviewFrame { border: 1px solid rgba(150, 150, 150, 0.4); border-radius: 8px; }"
         )
-        self.preview_layout = QVBoxLayout(self.preview_frame)
+        self.preview_layout = LimVBoxLayout(self.preview_frame)
         self.preview_layout.setContentsMargins(16, 16, 16, 16)
-        self.preview_layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+        self.preview_layout.setAlignment(
+            Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft
+        )
         layout.addWidget(self.preview_frame)
-        
+
         self.current_preview_widget = None
 
         layout.addSpacing(12)
@@ -255,10 +284,10 @@ class ComponentDetailPanel(LimFrame):
         usage_label.setObjectName("ComponentDetailSectionTitle")
         layout.addWidget(usage_label)
 
-        self.usage = QPlainTextEdit(self)
+        self.usage = LimPlainTextEdit(self)
         self.usage.setObjectName("ComponentDetailUsage")
         self.usage.setStyleSheet(
-            "QPlainTextEdit#ComponentDetailUsage { border: 1px solid rgba(150, 150, 150, 0.4); border-radius: 8px; padding: 8px; }"
+            "LimPlainTextEdit#ComponentDetailUsage { border: 1px solid rgba(150, 150, 150, 0.4); border-radius: 8px; padding: 8px; }"
         )
         self.usage.setReadOnly(True)
         self.usage.setFixedHeight(120)
@@ -270,13 +299,13 @@ class ComponentDetailPanel(LimFrame):
         self.title.setText(info.name)
         self.description.setText(info.description)
         self.usage.setPlainText(info.usage)
-        
+
         # Clear old preview
         if self.current_preview_widget:
             self.preview_layout.removeWidget(self.current_preview_widget)
             self.current_preview_widget.deleteLater()
             self.current_preview_widget = None
-            
+
         # Add new preview
         if info.preview_factory:
             self.current_preview_widget = info.preview_factory()
@@ -286,13 +315,13 @@ class ComponentDetailPanel(LimFrame):
 ############## EXPLORER PAGE ###################
 
 
-class LimComponentExplorer(QWidget):
+class LimComponentExplorer(LimWidget):
     """Combines the list panel and detail panel into a single browsable page."""
 
     def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
 
-        layout = QHBoxLayout(self)
+        layout = LimHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 

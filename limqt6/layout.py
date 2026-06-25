@@ -168,3 +168,24 @@ class LimNavbar(QFrame):
     def add_action(self, widget: QWidget) -> QWidget:
         self._actions_layout.addWidget(widget)
         return widget
+
+
+class LimVBoxLayout(QVBoxLayout):
+    """
+    A basic styled QVBoxLayout.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setObjectName("LimVBoxLayout")
+
+
+class LimHBoxLayout(QHBoxLayout):
+    """
+    A basic styled QHBoxLayout.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setObjectName("LimHBoxLayout")
+

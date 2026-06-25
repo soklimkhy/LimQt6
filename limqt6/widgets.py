@@ -5,6 +5,10 @@ from PyQt6.QtWidgets import (
     QFrame,
     QCheckBox,
     QGraphicsDropShadowEffect,
+    QWidget,
+    QButtonGroup,
+    QScrollArea,
+    QPlainTextEdit,
 )
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
@@ -64,3 +68,44 @@ class LimFrame(QFrame):
 
         # Additional property to ensure it's not transparent if styled poorly
         self.setAutoFillBackground(True)
+
+
+class LimWidget(QWidget):
+    """
+    A basic styled QWidget.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setObjectName("LimWidget")
+
+
+class LimButtonGroup(QButtonGroup):
+    """
+    A styled QButtonGroup.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setObjectName("LimButtonGroup")
+
+
+class LimScrollArea(QScrollArea):
+    """
+    A styled QScrollArea.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setObjectName("LimScrollArea")
+
+
+class LimPlainTextEdit(QPlainTextEdit):
+    """
+    A styled QPlainTextEdit.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setObjectName("LimPlainTextEdit")
+
