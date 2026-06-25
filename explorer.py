@@ -1,11 +1,12 @@
 """
 Component browser for the demo app: a left sidebar with a search box and
 an A-Z list of every LimQt6 widget, paired with a detail panel that shows
-the selected widget's description and a usage snippet.
+the selected widget's description, a preview, and a usage snippet.
 """
 
 import inspect
 from dataclasses import dataclass
+from typing import Callable, Optional
 
 from PyQt6.QtWidgets import (
     QWidget,
@@ -17,7 +18,7 @@ from PyQt6.QtWidgets import (
     QFrame,
 )
 
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal, Qt
 
 from limqt6.widgets import LimLabel, LimButton, LimLineEdit, LimCheckBox, LimFrame
 from limqt6.widgetsplus import LimSwitch, LimThemeSwitcher
@@ -41,6 +42,78 @@ _USAGE = {
     "LimThemeSwitcher": "switcher = LimThemeSwitcher()\nnavbar.add_action(switcher)",
 }
 
+def _preview_lim_button():
+    return LimButton("Click Me")
+
+def _preview_lim_checkbox():
+    return LimCheckBox("Accept Terms & Conditions")
+
+def _preview_lim_dialog():
+    btn = LimButton("Open Demo Dialog")
+    def on_click():
+        d = LimDialog("Confirm action", btn)
+        d.resize(300, 150)
+        l = QVBoxLayout(d.content)
+        l.addWidget(LimLabel("Are you sure?"))
+        ok = LimButton("OK")
+        ok.clicked.connect(d.accept)
+        d.add_action(ok)
+        d.exec()
+    btn.clicked.connect(on_click)
+    return btn
+
+def _preview_lim_frame():
+    f = LimFrame()
+    l = QVBoxLayout(f)
+    l.addWidget(LimLabel("Card Title"))
+    l.addWidget(LimLabel("This is inside a frame."))
+    return f
+
+def _preview_lim_label():
+    return LimLabel("Hello from LimQt6!")
+
+def _preview_lim_line_edit():
+    le = LimLineEdit()
+    le.setPlaceholderText("Type something here...")
+    return le
+
+def _preview_lim_navbar():
+    n = LimNavbar("Dashboard")
+    n.add_action(LimButton("Action"))
+    return n
+
+def _preview_lim_nav_item():
+    item = LimNavItem("Dashboard")
+    item.setChecked(True)
+    return item
+
+def _preview_lim_sidebar():
+    s = LimSidebar("LimQt6")
+    s.add_item("Dashboard", checked=True)
+    s.add_item("Settings")
+    s.setFixedHeight(200)
+    return s
+
+def _preview_lim_switch():
+    return LimSwitch()
+
+def _preview_lim_theme_switcher():
+    return LimThemeSwitcher()
+
+_PREVIEWS = {
+    "LimButton": _preview_lim_button,
+    "LimCheckBox": _preview_lim_checkbox,
+    "LimDialog": _preview_lim_dialog,
+    "LimFrame": _preview_lim_frame,
+    "LimLabel": _preview_lim_label,
+    "LimLineEdit": _preview_lim_line_edit,
+    "LimNavbar": _preview_lim_navbar,
+    "LimNavItem": _preview_lim_nav_item,
+    "LimSidebar": _preview_lim_sidebar,
+    "LimSwitch": _preview_lim_switch,
+    "LimThemeSwitcher": _preview_lim_theme_switcher,
+}
+
 _CLASSES = [
     LimButton,
     LimCheckBox,
@@ -61,6 +134,7 @@ class ComponentInfo:
     name: str
     description: str
     usage: str
+    preview_factory: Callable[[], QWidget] | None = None
 
 
 COMPONENTS: list[ComponentInfo] = sorted(
@@ -69,6 +143,7 @@ COMPONENTS: list[ComponentInfo] = sorted(
             name=cls.__name__,
             description=inspect.getdoc(cls) or "No description available.",
             usage=_USAGE.get(cls.__name__, ""),
+            preview_factory=_PREVIEWS.get(cls.__name__),
         )
         for cls in _CLASSES
     ),
@@ -138,14 +213,14 @@ class ComponentListPanel(QWidget):
 
 
 class ComponentDetailPanel(LimFrame):
-    """Shows the title, description and usage snippet for the selected component."""
+    """Shows the title, description, preview, and usage snippet for the selected component."""
 
     def __init__(self, parent: QWidget | None = None):
         super().__init__(parent)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(24, 24, 24, 24)
-        layout.setSpacing(8)
+        layout.setSpacing(12)
 
         self.title = LimLabel("")
         self.title.setObjectName("ComponentDetailTitle")
@@ -155,6 +230,26 @@ class ComponentDetailPanel(LimFrame):
         self.description.setObjectName("ComponentDetailDescription")
         self.description.setWordWrap(True)
         layout.addWidget(self.description)
+        
+        layout.addSpacing(12)
+
+        preview_label = LimLabel("Preview")
+        preview_label.setObjectName("ComponentDetailSectionTitle")
+        layout.addWidget(preview_label)
+
+        self.preview_frame = QFrame()
+        self.preview_frame.setObjectName("ComponentPreviewFrame")
+        self.preview_frame.setStyleSheet(
+            "QFrame#ComponentPreviewFrame { border: 1px solid rgba(150, 150, 150, 0.4); border-radius: 8px; }"
+        )
+        self.preview_layout = QVBoxLayout(self.preview_frame)
+        self.preview_layout.setContentsMargins(16, 16, 16, 16)
+        self.preview_layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(self.preview_frame)
+        
+        self.current_preview_widget = None
+
+        layout.addSpacing(12)
 
         usage_label = LimLabel("Usage")
         usage_label.setObjectName("ComponentDetailSectionTitle")
@@ -162,6 +257,9 @@ class ComponentDetailPanel(LimFrame):
 
         self.usage = QPlainTextEdit(self)
         self.usage.setObjectName("ComponentDetailUsage")
+        self.usage.setStyleSheet(
+            "QPlainTextEdit#ComponentDetailUsage { border: 1px solid rgba(150, 150, 150, 0.4); border-radius: 8px; padding: 8px; }"
+        )
         self.usage.setReadOnly(True)
         self.usage.setFixedHeight(120)
         layout.addWidget(self.usage)
@@ -172,6 +270,17 @@ class ComponentDetailPanel(LimFrame):
         self.title.setText(info.name)
         self.description.setText(info.description)
         self.usage.setPlainText(info.usage)
+        
+        # Clear old preview
+        if self.current_preview_widget:
+            self.preview_layout.removeWidget(self.current_preview_widget)
+            self.current_preview_widget.deleteLater()
+            self.current_preview_widget = None
+            
+        # Add new preview
+        if info.preview_factory:
+            self.current_preview_widget = info.preview_factory()
+            self.preview_layout.addWidget(self.current_preview_widget)
 
 
 ############## EXPLORER PAGE ###################

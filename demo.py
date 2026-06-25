@@ -1,4 +1,4 @@
-import os
+
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from limqt6.widgetsplus import LimThemeSwitcher
 from limqt6.layout import LimNavbar
