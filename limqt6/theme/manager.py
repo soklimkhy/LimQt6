@@ -195,6 +195,36 @@ class ThemeManager:
                 border-top: 1px solid {t.border};
             }}
 
+            /* Component explorer: list panel + detail panel */
+            QWidget#ComponentListPanel {{
+                border-right: 1px solid {t.border};
+            }}
+            QLabel#ComponentDetailTitle {{
+                font-size: 22px;
+                font-weight: 700;
+                background-color: transparent;
+            }}
+            QLabel#ComponentDetailDescription {{
+                font-size: 14px;
+                color: {t.text_secondary};
+                background-color: transparent;
+            }}
+            QLabel#ComponentDetailSectionTitle {{
+                font-size: 13px;
+                font-weight: 600;
+                color: {t.text_secondary};
+                background-color: transparent;
+                margin-top: 8px;
+            }}
+            QPlainTextEdit#ComponentDetailUsage {{
+                background-color: {t.background};
+                border: 1px solid {t.border};
+                border-radius: 6px;
+                padding: 10px;
+                font-family: 'Consolas', 'Courier New', monospace;
+                font-size: 13px;
+            }}
+
             /* Nav item: entries inside LimSidebar/LimNavbar */
             LimNavItem {{
                 background-color: transparent;
