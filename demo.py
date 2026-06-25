@@ -1,20 +1,16 @@
 import os
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 from limqt6.widgets import LimButton, LimLabel, LimLineEdit, LimFrame, LimCheckBox
-from limqt6.widgetsplus import LimSwitch
+from limqt6.widgetsplus import LimSwitch, LimThemeSwitcher
+from limqt6.layout import LimSidebar, LimNavbar
 from limqt6.core.app import LimApp
-from limqt6.theme.manager import theme_manager
 from PyQt6.QtGui import QIcon
 
 
-def main():
-    app = LimApp()
-
-    window = QWidget()
-    window.setWindowTitle("LimQt6")
-    window.resize(400, 300)
-
-    layout = QVBoxLayout(window)
+def build_content() -> tuple[QWidget, LimSwitch]:
+    content = QWidget()
+    layout = QVBoxLayout(content)
+    layout.setContentsMargins(20, 20, 20, 20)
     layout.setSpacing(15)
 
     # 1. Card Section
@@ -35,7 +31,7 @@ def main():
     switch_layout.addStretch()
     card_layout.addLayout(switch_layout)
 
-    # NEW: Checkbox
+    # 4. Checkbox
     checkbox = LimCheckBox("Accept Terms & Conditions")
     card_layout.addWidget(checkbox)
 
@@ -50,26 +46,50 @@ def main():
     icon_btn = LimButton("   Star Icon")
     icon_btn.setIcon(QIcon(icon_path))
 
-    # Theme toggle buttons
-    theme_layout = QHBoxLayout()
-    btn_light = LimButton("Light Theme")
-    btn_dark = LimButton("Dark Theme")
-
-    def set_theme(name):
-        theme_manager.set_theme(name)
-        # Note: Standard QIcon won't auto-tint, that's fine.
-        switch.update()  # Force repaint
-
-    btn_light.clicked.connect(lambda: set_theme("light"))
-    btn_dark.clicked.connect(lambda: set_theme("dark"))
-
-    theme_layout.addWidget(btn_light)
-    theme_layout.addWidget(btn_dark)
-
     layout.addWidget(label)
     layout.addWidget(button)
     layout.addWidget(icon_btn)
-    layout.addLayout(theme_layout)
+    layout.addStretch()
+
+    return content, switch
+
+
+def main():
+    app = LimApp()
+
+    window = QWidget()
+    window.setWindowTitle("LimQt6")
+    window.resize(840, 520)
+
+    root_layout = QHBoxLayout(window)
+    root_layout.setContentsMargins(0, 0, 0, 0)
+    root_layout.setSpacing(0)
+
+    # Sidebar
+    sidebar = LimSidebar("LimQt6")
+    sidebar.add_item("Dashboard", checked=True)
+    sidebar.add_item("Components")
+    sidebar.add_item("Settings")
+    root_layout.addWidget(sidebar)
+
+    # Right side: Navbar on top, content below
+    right_panel = QWidget()
+    right_layout = QVBoxLayout(right_panel)
+    right_layout.setContentsMargins(0, 0, 0, 0)
+    right_layout.setSpacing(0)
+
+    navbar = LimNavbar("Dashboard")
+    navbar.set_menu_callback(sidebar.toggle)
+    theme_switcher = LimThemeSwitcher()
+    navbar.add_action(theme_switcher)
+    right_layout.addWidget(navbar)
+
+    content, switch = build_content()
+    right_layout.addWidget(content)
+
+    root_layout.addWidget(right_panel)
+
+    theme_switcher.clicked.connect(switch.update)  # Force repaint after theme change
 
     window.show()
 

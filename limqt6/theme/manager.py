@@ -118,7 +118,67 @@ class ThemeManager:
                 background-color: {t.checkbox_background};
                 border: 1px solid {t.primary};
                 image: url({tick_icon_path});
-         
+
+            }}
+
+            /* Sidebar: vertical nav panel */
+            LimSidebar {{
+                background-color: {t.surface};
+                border-right: 1px solid {t.border};
+            }}
+
+            /* Navbar: horizontal top bar */
+            LimNavbar {{
+                background-color: {t.surface};
+                border-bottom: 1px solid {t.border};
+            }}
+
+            QLabel#LimBrandLabel {{
+                font-size: 16px;
+                font-weight: 700;
+                background-color: transparent;
+            }}
+
+            QPushButton#LimNavbarMenuButton {{
+                background-color: transparent;
+                border: none;
+                border-radius: 6px;
+                padding: 0px;
+            }}
+            QPushButton#LimNavbarMenuButton:hover {{
+                background-color: {t.accent};
+                color: {t.accent_foreground};
+            }}
+
+            QPushButton#LimThemeSwitcher {{
+                background-color: transparent;
+                border: none;
+                border-radius: 6px;
+                padding: 0px;
+            }}
+            QPushButton#LimThemeSwitcher:hover {{
+                background-color: {t.accent};
+            }}
+
+            /* Nav item: entries inside LimSidebar/LimNavbar */
+            LimNavItem {{
+                background-color: transparent;
+                color: {t.text_secondary};
+                border: none;
+                border-radius: 6px;
+                padding: 8px 12px;
+                text-align: left;
+                font-size: 14px;
+                font-weight: 500;
+            }}
+            LimNavItem:hover {{
+                background-color: {t.accent};
+                color: {t.text};
+            }}
+            LimNavItem:checked {{
+                background-color: {t.accent};
+                color: {t.accent_foreground};
+                font-weight: 600;
             }}
         """
         return style
